@@ -1,0 +1,84 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.user-interface {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.send-section,
+.receive-section {
+  width: 48%;
+  margin-top: 20px;
+}
+
+.send-section h2,
+.receive-section h2 {
+  font-size: 1.2em;
+  color: #444;
+}
+
+textarea,
+select,
+button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#receivedMessages {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.message {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.message:last-child {
+  border-bottom: none;
+}
