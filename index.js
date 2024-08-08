@@ -27,6 +27,7 @@ async function generateKeyPair() {
   for (const user in users) {
     users[user].keyPair = await generateKeyPair();
   }
+  console.log('Key pairs generated:', users);
 })();
 
 // Generates a new AES-GCM key and initialization vector (IV)
@@ -146,14 +147,19 @@ document.getElementById('sendMessageBtn').addEventListener('click', async () => 
   const recipient = document.getElementById('recipientSelect').value;
 
   if (message && recipient) {
-    const recipientKeyPair = users[recipient].keyPair;
+    try {
+      const recipientKeyPair = users[recipient].keyPair;
 
-    const secretKeyObject = await generateSecretKey();
+      const secretKeyObject = await generateSecretKey();
 
-    const { ciphertext: encryptedMessage, iv } = await encryptMessage(message, secretKeyObject);
-    const digitalSignature = await createDigitalSignature(encryptedMessage, users['user1'].keyPair.privateKey);
+      const { ciphertext: encryptedMessage, iv } = await encryptMessage(message, secretKeyObject);
+      const digitalSignature = await createDigitalSignature(encryptedMessage, users['user1'].keyPair.privateKey);
 
-    displaySentMessage(encryptedMessage, recipient, digitalSignature, iv);
+      displaySentMessage(encryptedMessage, recipient, digitalSignature, iv);
+    } catch (error) {
+      console.error('Error sending encrypted message:', error);
+      alert('An error occurred while sending the encrypted message.');
+    }
   } else {
     alert('Please enter a message and select a recipient.');
   }
@@ -179,23 +185,16 @@ function displaySentMessage(encryptedMessage, recipient, digitalSignature, iv) {
 // Decrypts and verifies a received message
 async function decryptAndVerifyMessage(encryptedMessage, recipient) {
   try {
-    // Retrieve the IV and signature from button attributes
     const iv = event.target.dataset.iv;
     const digitalSignature = event.target.dataset.signature;
 
-    console.log('IV:', iv);
-    console.log('Encrypted Message:', encryptedMessage);
-    console.log('Digital Signature:', digitalSignature);
-
-    // Decrypt the message
     const decryptedMessage = await decryptMessage(encryptedMessage, iv, users[recipient].keyPair.privateKey);
     console.log('Decrypted Message:', decryptedMessage);
 
-    // Verify the digital signature
-    const isValid = await verifyDigitalSignature(encryptedMessage, digitalSignature, users['user1'].keyPair.publicKey);
+    const senderPublicKey = users['user1'].keyPair.publicKey; // Assuming sender is user1
+    const isValid = await verifyDigitalSignature(encryptedMessage, digitalSignature, senderPublicKey);
     console.log('Signature Valid:', isValid);
 
-    // Display the results
     alert(`Decrypted Message: ${decryptedMessage}\nSignature Valid: ${isValid}`);
   } catch (error) {
     console.error('Error in decryption or verification:', error);
